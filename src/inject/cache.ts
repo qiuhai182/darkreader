@@ -16,12 +16,29 @@ export function wasEnabledForHost(): boolean | null {
         }
     } catch (err) {
     }
+    // 回退到 localStorage 持久记录，跨浏览器会话生效，避免每次启动后的首次加载闪亮色
+    try {
+        if (localStorage.getItem(STORAGE_KEY_WAS_ENABLED_FOR_HOST) === 'true') {
+            return true;
+        }
+    } catch (err) {
+    }
     return null;
 }
 
 export function writeEnabledForHost(value: boolean): void {
     try {
         sessionStorage.setItem(STORAGE_KEY_WAS_ENABLED_FOR_HOST, value ? 'true' : 'false');
+    } catch (err) {
+    }
+    try {
+        // 仅持久化"启用"状态；"停用"状态只保留在 sessionStorage，
+        // 这样被用户排除的站点在新会话中回退到默认检测逻辑，不会闪深色
+        if (value) {
+            localStorage.setItem(STORAGE_KEY_WAS_ENABLED_FOR_HOST, 'true');
+        } else {
+            localStorage.removeItem(STORAGE_KEY_WAS_ENABLED_FOR_HOST);
+        }
     } catch (err) {
     }
 }

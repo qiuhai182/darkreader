@@ -1,4 +1,7 @@
 @echo off
+
+python convert_to_utf8.py
+
 setlocal
 cd /d "%~dp0"
 
@@ -25,11 +28,13 @@ if not exist node_modules (
 )
 
 echo [2/2] Building Dark Reader (%MODE%) ... this may take a few minutes
-if /i "%MODE%"=="debug" (
-    call npm run debug
-) else (
-    call npm run build
-)
+echo (Task logs stream below; dots = still running)
+
+rem Run the build via a PowerShell wrapper: child output streams to the
+rem console in real time, with a heartbeat dot printed every 0.9 seconds.
+set "NPMARG=build"
+if /i "%MODE%"=="debug" set "NPMARG=debug"
+powershell -NoProfile -Command "$p=Start-Process npm.cmd -ArgumentList 'run','%NPMARG%' -NoNewWindow -PassThru; $null=$p.Handle; while(!$p.HasExited){Start-Sleep -Milliseconds 900; Write-Host -NoNewline '.'}; $p.WaitForExit(); exit $p.ExitCode"
 if errorlevel 1 goto fail
 
 echo.

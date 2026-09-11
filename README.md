@@ -1,3 +1,90 @@
+<div align="center">
+
+**简体中文** | [English](#english)
+
+</div>
+
+## 关于本衍生版（Fork）
+
+本项目是 [Dark Reader](https://github.com/darkreader/darkreader)（v4.9.130）的衍生版，在原版基础上做了以下修改：
+
+### 1. 强制暗色模式
+- **gitee.com**：无论 Gitee 站点自身切换为亮色还是深色主题，插件始终强制使用暗色主题
+  - `src/config/detector-hints.config`：为 gitee.com 添加 `NO DARK THEME`，插件不再因站点自带深色主题而自动让位
+  - `src/config/dynamic-theme-fixes.config`：强制 `body` 深色背景等站点修复
+- **teamorouter.cn**：将浅色 hero 背景图替换为纯渐变，并强制深色背景
+
+### 2. 消除页面加载时的亮色闪烁
+- `src/inject/fallback.ts`：文档解析前注入的兜底深色样式，不再要求系统为深色模式——只要该站点此前启用过插件，立即生效
+- `src/inject/cache.ts`：启用标记持久化到 `localStorage`，跨标签页会话与浏览器重启生效；「停用」标记仅保留在 `sessionStorage`，不影响被排除的站点
+
+### 3. Manifest V3 兼容性修复
+- `src/manifest-chrome-mv3.json`：移除 Chrome 不支持的 `navigate-to` CSP 指令，消除加载扩展时的警告
+
+### 一键构建（Windows）
+
+在仓库根目录运行 `build.bat`（本地脚本，不入库）：
+
+- `build.bat` → release 版
+- `build.bat debug` → 调试版
+
+脚本会自动安装依赖并构建，产物位于 `build\release\` 与 `build\debug\` 下的 `chrome`、`chrome-mv3`、`firefox`、`thunderbird` 目录。
+
+### 加载与测试（Chrome / Edge）
+
+1. 打开 `chrome://extensions`，开启右上角「开发者模式」
+2. 点击「加载已解压的扩展程序」，选择 `build/release/chrome-mv3`
+3. 更新代码后重新构建并刷新扩展；若行为异常，先移除旧扩展再重新加载（浏览器可能缓存旧文件）
+
+> 说明：扩展默认使用打包在本地的站点修复配置（`syncSitesFixes` 默认关闭），修改 `src/config/*.config` 后需重新构建才能生效。
+
+---
+
+<div align="center">
+
+**[简体中文](#关于本衍生版fork) | English**
+
+</div>
+
+## English
+
+This project is a fork of [Dark Reader](https://github.com/darkreader/darkreader) (v4.9.130) with the following changes on top of upstream:
+
+### 1. Forced dark mode
+- **gitee.com**: dark mode is always enforced, even when Gitee's own color theme is switched to light or dark
+  - `src/config/detector-hints.config`: added `NO DARK THEME` for gitee.com, so Dark Reader no longer yields to sites with built-in dark themes
+  - `src/config/dynamic-theme-fixes.config`: site fixes forcing a dark `body` background, etc.
+- **teamorouter.cn**: replaced the light hero background image with a pure gradient and forced a dark background
+
+### 2. No light flash on page load
+- `src/inject/fallback.ts`: the fallback dark style injected before document parsing no longer requires the system color scheme to be dark — it applies immediately for any site where Dark Reader was previously enabled
+- `src/inject/cache.ts`: the enabled flag is persisted in `localStorage` and survives tab sessions and browser restarts; the "disabled" flag stays in `sessionStorage` only, so excluded sites are unaffected
+
+### 3. Manifest V3 compatibility fix
+- `src/manifest-chrome-mv3.json`: removed the unsupported `navigate-to` CSP directive to eliminate the warning when loading the extension
+
+### One-click build (Windows)
+
+Run `build.bat` in the repository root (local script, not committed):
+
+- `build.bat` → release build
+- `build.bat debug` → debug build
+
+The script installs dependencies automatically and writes output to `build\release\` and `build\debug\` (`chrome`, `chrome-mv3`, `firefox`, `thunderbird`).
+
+### Load and test (Chrome / Edge)
+
+1. Open `chrome://extensions` and enable **Developer mode**
+2. Click **Load unpacked** and select `build/release/chrome-mv3`
+3. After code changes, rebuild and reload the extension; if anything looks wrong, remove the old extension and load it again (the browser may cache stale files)
+
+> Note: the extension uses the site-fixes configs bundled locally by default (`syncSitesFixes` is off), so changes to `src/config/*.config` require a rebuild to take effect.
+
+---
+
+> 以下为上游 [Dark Reader](https://github.com/darkreader/darkreader) 的原始文档（英文）。
+> Below is the original upstream Dark Reader documentation (in English).
+
 <p align="center"><a href="https://darkreader.org" target="_blank" rel="noreferrer noopener"><img width="250" alt="Dark Reader's mascot" src="https://raw.githubusercontent.com/darkreader/darkreader.github.io/master/images/darkreader-mascot.svg"></a></p>
 <p align="center">Dark Reader <strong>analyzes</strong> web pages and aims to <strong>reduce eyestrain</strong> while browsing the web.</p>
 <br/>

@@ -2,10 +2,12 @@ import {wasEnabledForHost} from './cache';
 
 declare const __FIREFOX_MV2__: boolean;
 
+// 兜底深色样式：只要本站点此前启用过 Dark Reader，
+// 即使系统为浅色模式也立即套用，避免页面加载时出现亮色闪烁
+const wasEnabled = wasEnabledForHost();
 if (
     document.documentElement instanceof HTMLHtmlElement &&
-    matchMedia('(prefers-color-scheme: dark)').matches &&
-    wasEnabledForHost() !== false &&
+    (wasEnabled === true || (wasEnabled !== false && matchMedia('(prefers-color-scheme: dark)').matches)) &&
     !document.querySelector('.darkreader--fallback') &&
     !document.querySelector('.darkreader') &&
     !(__FIREFOX_MV2__ && window !== top)
