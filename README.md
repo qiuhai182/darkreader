@@ -11,8 +11,10 @@
 ### 1. 强制暗色模式
 - **gitee.com**：无论 Gitee 站点自身切换为亮色还是深色主题，插件始终强制使用暗色主题
   - `src/config/detector-hints.config`：为 gitee.com 添加 `NO DARK THEME`，插件不再因站点自带深色主题而自动让位
-  - `src/config/dynamic-theme-fixes.config`：强制 `body` 深色背景等站点修复
-- **teamorouter.cn**：将浅色 hero 背景图替换为纯渐变，并强制深色背景
+  - `src/config/dynamic-theme-fixes.config`：强制 `body` 深色背景；并在 `html` / `html.dark-mode` 上中和站点自身的 `filter: invert(1) ...` 反色规则，避免插件的深色背景被站点反色再次翻回亮色
+- **teamorouter.cn**：始终强制暗色主题
+  - `src/config/detector-hints.config`：添加 `NO DARK THEME`，插件不再因探测到站点自带深色主题而自我停用（新版 dashboard 页面不跟随站点暗色，一旦让位就会整页亮色）
+  - `src/config/dynamic-theme-fixes.config`：将浅色 hero 背景图替换为纯渐变，并强制深色背景
 
 ### 2. 消除页面加载时的亮色闪烁
 - `src/inject/fallback.ts`：文档解析前注入的兜底深色样式，不再要求系统为深色模式——只要该站点此前启用过插件，立即生效
@@ -53,8 +55,10 @@ This project is a fork of [Dark Reader](https://github.com/darkreader/darkreader
 ### 1. Forced dark mode
 - **gitee.com**: dark mode is always enforced, even when Gitee's own color theme is switched to light or dark
   - `src/config/detector-hints.config`: added `NO DARK THEME` for gitee.com, so Dark Reader no longer yields to sites with built-in dark themes
-  - `src/config/dynamic-theme-fixes.config`: site fixes forcing a dark `body` background, etc.
-- **teamorouter.cn**: replaced the light hero background image with a pure gradient and forced a dark background
+  - `src/config/dynamic-theme-fixes.config`: site fixes forcing a dark `body` background; also neutralizes the site's own `filter: invert(1) ...` rule on `html` / `html.dark-mode`, so the dark background is not flipped back to light by the site
+- **teamorouter.cn**: dark mode is always enforced
+  - `src/config/detector-hints.config`: added `NO DARK THEME`, so Dark Reader no longer disables itself after detecting a built-in dark theme (the new dashboard pages do not follow the site's dark theme, so yielding to it left the page fully light)
+  - `src/config/dynamic-theme-fixes.config`: replaced the light hero background image with a pure gradient and forced a dark background
 
 ### 2. No light flash on page load
 - `src/inject/fallback.ts`: the fallback dark style injected before document parsing no longer requires the system color scheme to be dark — it applies immediately for any site where Dark Reader was previously enabled
