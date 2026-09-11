@@ -44,3 +44,7 @@ deno.json
 # System files
 #-----------------------------------
 .DS_Store
+
+# Local utility scripts (not part of the project)
+#-----------------------------------
+nul
